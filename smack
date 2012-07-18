@@ -7,13 +7,31 @@ use strict;
 # Written by Stanislav Shalunov, July 18, 2012.
 
 use File::Find;
+use Term::ANSIColor qw( :constants );
+$Term::ANSIColor::AUTORESET = 1;
+my $first = 1;
 find(\&grep, '.');
 
 sub grep {
   return unless -f -T;
   $. = 0;
   open(FILE, '<', $_) or return;
+  my $match = 0;
   while (<FILE>) {
-    /${ARGV[0]}/o and print "${File::Find::name}:$.: $_";
+    if (/${ARGV[0]}/o) {
+      if (!$match) {
+        if ($first) {
+          $first = 0;
+        } else {
+          print "\n";
+        }
+        print BOLD GREEN "${File::Find::name}\n";
+        $match = 1;
+      }
+      print BOLD YELLOW "$.";
+      print ": $`";
+      print BLACK ON_YELLOW "$&";
+      print "$'";
+    }
   }
 }
