@@ -1,0 +1,19 @@
+#!/usr/bin/perl -w
+use strict;
+
+# Usage: smack foo
+# Searches for "foo" recursively. Can use any Perl regex.
+# (Inspired by ack, which is great, but unfortunately twice slower than grep.)
+# Written by Stanislav Shalunov, July 18, 2012.
+
+use File::Find;
+find(\&grep, '.');
+
+sub grep {
+  return unless -f -T;
+  $. = 0;
+  open(FILE, '<', $_) or return;
+  while (<FILE>) {
+    /${ARGV[0]}/o and print "${File::Find::name}:$.: $_";
+  }
+}
