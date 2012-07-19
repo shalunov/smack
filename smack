@@ -13,7 +13,5 @@ sub grep {
   return unless -f -T;
   $. = 0;
   open(FILE, '<', $_) or return;
-  while (<FILE>) {
-    /${ARGV[0]}/o and print "${File::Find::name}:$.: $_";
-  }
+  /${ARGV[0]}/o and print "${File::Find::name}:$.: $_" while (<FILE>);
 }
